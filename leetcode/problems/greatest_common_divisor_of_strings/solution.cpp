@@ -4,9 +4,7 @@ public:
         if (str1 + str2 != str2 + str1) {
             return "";
         }
-
-        int gcdLen = gcd(str1.size(), str2.size());
-
-        return str1.substr(0, gcdLen);
+        int gcdlen = gcd(str1.size(), str2.size());
+        return str1.substr(0, gcdlen);
     }
 };
