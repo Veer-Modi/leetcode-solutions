@@ -5,13 +5,20 @@ on:
     - cron: "0 */12 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Sync LeetCode
         uses: joshcai/leetcode-sync@v1.5
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GH_TOKEN }}
           leetcode-session: ${{ secrets.LEETCODE_SESSION }}
-          username: ${{ secrets.LEETCODE_USERNAME }}
+          leetcode-csrf-token: ${{ secrets.LEETCODE_CSRF_TOKEN }}
+          destination-folder: "leetcode"
