@@ -6,7 +6,6 @@ const { execSync } = require("child_process");
 (async () => {
   const browser = await chromium.launch({ headless: true });
 
-  // More human-like browser context
   const context = await browser.newContext({
     userAgent:
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -17,24 +16,28 @@ const { execSync } = require("child_process");
 
   console.log("➡ Opening LeetCode login page...");
 
-  // IMPORTANT FIX: do NOT use networkidle
   await page.goto("https://leetcode.com/accounts/login/", {
     waitUntil: "domcontentloaded",
     timeout: 60000,
   });
 
-  // Wait for login form
+  // Wait for input fields (this is stable)
   await page.waitForSelector('input[name="login"]', { timeout: 60000 });
+  await page.waitForSelector('input[name="password"]', { timeout: 60000 });
 
+  // Fill credentials
   await page.fill('input[name="login"]', process.env.LEETCODE_USERNAME);
   await page.fill('input[name="password"]', process.env.LEETCODE_PASSWORD);
 
-  await page.click('button[type="submit"]');
+  // 🔥 KEY FIX: submit via Enter (NOT button click)
+  await page.keyboard.press("Enter");
 
-  // Human-like delay
-  await page.waitForTimeout(5000 + Math.random() * 4000);
+  // Wait for navigation after login
+  await page.waitForTimeout(7000 + Math.random() * 4000);
 
-  if (!page.url().includes("leetcode.com")) {
+  // Validate login success
+  const url = page.url();
+  if (!url.includes("leetcode.com")) {
     throw new Error("❌ Login failed");
   }
 
