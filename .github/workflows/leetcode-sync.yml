@@ -2,7 +2,7 @@ name: Sync LeetCode Solutions
 
 on:
   schedule:
-    - cron: "0 */12 * * *"
+    - cron: "0 3 * * *" # once per day (safe)
   workflow_dispatch:
 
 permissions:
@@ -11,14 +11,24 @@ permissions:
 jobs:
   sync:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Sync LeetCode
-        uses: joshcai/leetcode-sync@v1.5
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          github-token: ${{ secrets.GH_TOKEN }}
-          leetcode-session: ${{ secrets.LEETCODE_SESSION }}
-          leetcode-csrf-token: ${{ secrets.LEETCODE_CSRF_TOKEN }}
-          destination-folder: "leetcode"
+          node-version: 18
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npx playwright install chromium
+
+      - name: Run LeetCode Playwright Sync
+        run: node scripts/leetcode-sync.js
+        env:
+          LEETCODE_USERNAME: ${{ secrets.LEETCODE_USERNAME }}
+          LEETCODE_PASSWORD: ${{ secrets.LEETCODE_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

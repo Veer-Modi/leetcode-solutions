@@ -1,0 +1,27 @@
+# Node modules
+node_modules/
+
+# Playwright
+playwright-report/
+test-results/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+
+# Optional: Ignore auto-generated stats if you want
+# leetcode/stats/
